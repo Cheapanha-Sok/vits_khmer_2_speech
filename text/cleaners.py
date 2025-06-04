@@ -16,6 +16,7 @@ import re
 from unidecode import unidecode
 from phonemizer import phonemize
 from phonemizer.backend import EspeakBackend
+from khmerphonemizer import phonemize as khmer_phonemize
 backend = EspeakBackend("en-us", preserve_punctuation=True, with_stress=True)
 
 
@@ -120,3 +121,14 @@ def english_cleaners3(text):
     phonemes = backend.phonemize([text], strip=True)[0]
     phonemes = collapse_whitespace(phonemes)
     return phonemes
+
+def khmer_cleaner(text):
+    """Pipeline for Khmer text to phonemized form."""
+    text = expand_abbreviations(text)
+    tokens, phonemize = khmer_phonemize(text)
+    
+    # Optionally, collapse phonemes into a flat list or space-separated string if needed
+    phoneme_sequence = ' '.join([' '.join(p) for p in phonemize])
+    phoneme_sequence = collapse_whitespace(phoneme_sequence)
+    
+    return phoneme_sequence
